@@ -2,15 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.php",
-      "use": "vercel-php@0.6.0",
-      "config": { "maxDuration": 60 }
+      "src": "public/index.php",
+      "use": "vercel-php@0.6.0"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/index.php"
+      "dest": "/public/index.php"
     }
   ]
 }
