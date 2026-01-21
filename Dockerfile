@@ -1,4 +1,3 @@
-# Gunakan PHP CLI versi 8.2
 FROM php:8.2-cli
 
 # Install system dependencies
@@ -24,20 +23,17 @@ COPY . .
 # Install dependencies Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Buat file database.sqlite jika belum ada
-RUN mkdir -p database && touch database/database.sqlite
+# Buat folder data untuk SQLite dan file database
+RUN mkdir -p /var/data
+COPY database/database.sqlite /var/data/database.sqlite
+RUN chmod -R 775 /var/data storage bootstrap/cache
 
-# Set permission folder penting
-RUN chmod -R 775 storage bootstrap/cache database
+# Jangan generate APP_KEY di Dockerfile!
+# Gunakan APP_KEY dari Railway Environment Variables
 
-# Generate APP_KEY
-RUN php artisan key:generate --force
+# Jalankan migration setelah deploy (tidak di build)
+# RUN php artisan migrate --force
 
-# Jalankan migration agar tabel dibuat otomatis
-RUN php artisan migrate --force
-
-# Expose port Laravel
 EXPOSE 10000
 
-# Jalankan server Laravel
 CMD php artisan serve --host=0.0.0.0 --port=10000
