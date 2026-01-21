@@ -23,7 +23,16 @@ COPY . .
 # Install dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Permission
+# Create SQLite database (persistent disk)
+RUN touch /var/data/database.sqlite
+
+# Generate APP_KEY
+RUN php artisan key:generate --force
+
+# Run migrations (force untuk production)
+RUN php artisan migrate --force
+
+# Set permissions
 RUN chmod -R 775 storage bootstrap/cache
 
 # Expose port
