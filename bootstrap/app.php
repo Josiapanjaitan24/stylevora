@@ -12,13 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // 🔒 Trust Railway / reverse proxy (HTTPS)
+        // 🔒 Trust all proxies (Railway / reverse proxy)
         $middleware->trustProxies(
             at: '*',
-            headers: Request::HEADER_X_FORWARDED_ALL
+            headers: Request::HEADER_X_FORWARDED_FOR
+                   | Request::HEADER_X_FORWARDED_HOST
+                   | Request::HEADER_X_FORWARDED_PROTO
+                   | Request::HEADER_X_FORWARDED_PORT
         );
 
-        // 🔐 Alias middleware kamu
+        // 🔐 Alias middleware
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
         ]);
